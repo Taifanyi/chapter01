@@ -40,6 +40,65 @@ public class CalService {
 		}
 	}
 	
+	public String cal(String text, boolean isPercent) throws Exception {
+		double secondResult = secondNum == null ? Double.valueOf(text).doubleValue() : Double.valueOf(secondNum).doubleValue();
+		if (secondResult == 0 && this.lastOp.equals("/")) {
+			return "0";
+		}
+		if (isPercent) {
+			secondResult = MyMath.multiply(Double.valueOf(firstNum), MyMath.divide(secondResult, 100));
+		}
+		if (this.lastOp.equals("+")) {
+			firstNum = String.valueOf(MyMath.add(Double.valueOf(firstNum), secondResult));
+		} else if (this.lastOp.equals("*")) {
+			firstNum = String.valueOf(MyMath.multiply(Double.valueOf(firstNum), secondResult));
+		} else if (this.lastOp.equals("/")) {
+			firstNum = String.valueOf(MyMath.divide(Double.valueOf(firstNum), secondResult));
+		}
+		secondNum = secondNum == null ? text : secondNum;
+		this.isSecondNum = true;
+		return firstNum;
+	}
+	
+	public String setReciprocal(String text) {
+		if (text.equals("0")) {
+			return text;
+		} else {
+			this.isSecondNum = true;
+			return String.valueOf(MyMath.divide(1, Double.valueOf(text)));
+		}
+	}
+	
+	public String setOp(String cmd, String text) {
+		this.lastOp = cmd;
+		this.secondNum = null;
+		this.isSecondNum = true;
+		return null;
+	}
+	
+	public String setNegative(String text) {
+		if (text.indexOf("-") == 0) {
+			return text.substring(1, text.length());
+		}
+		return text.equals("0") ? text : "-" + text;
+	}
+	
+	public String catNum(String cmd, String text) {
+		String result = cmd;
+		if (!text.equals("0")) {
+			if (isSecondNum) {
+				isSecondNum = false;
+			} else {
+				result = text + cmd;
+			}
+		}
+		if (result.indexOf(".") == 0) {
+			result = "0" + result;
+		}
+		return result;
+	}
+	
+	
 	
 	
 	
